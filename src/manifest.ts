@@ -14,11 +14,4 @@ export default{
     }
   ],
   action: { default_popup: "popup.html" },
-  browser_specific_settings: {
-    gecko: {
-      id: "tyuiubility@incerstyle.ru",
-      strict_min_version: "109.0",
-      data_collection_permissions: []
-    }
-  }
 }
