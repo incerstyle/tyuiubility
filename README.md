@@ -45,5 +45,3 @@ This extension:
 2. Click **Load Temporary Add-on**
 3. Select the `manifest.json` file from `build/firefox-mv3/`
 4. The extension will now appear in your Firefox toolbar
-
-For persistent installation, submit the extension to [addons.mozilla.org](https://addons.mozilla.org/).
