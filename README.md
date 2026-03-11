@@ -1,33 +1,49 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# Tyuiubility Extension
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This extension allows you to save your Tyumen Industrial University group's schedule and view it anytime, anywhere, even without an internet connection.
 
-```bash
-pnpm dev
-# or
-npm run dev
-```
+## Permissions
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+The extension requests the following permissions:
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+- **Storage**: Saves your schedule locally for offline access
+- **Schedule tab access**: Reads schedule data from `https://my.tyuiu.ru/schedule*`
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
+## Privacy & Security
 
-## Making production build
+This extension:
+- Does not make network requests to third-party resources
+- Does not collect or store any user confidential information
+- Operates entirely with local browser storage
 
-Run the following:
+## Building and installation
 
-```bash
-pnpm build
-# or
-npm run build
-```
+### Prerequisites
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+- Node.js installed
+- [Plasmo](https://docs.plasmo.com/) framework
 
-## Submit to the webstores
+### Build process for Firefox
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+1. Install dependencies:
+    ```bash
+    npm install
+    ```
+
+2. Build the extension:
+    ```bash
+    npm run build -- --target=firefox
+    ```
+
+3. The compiled extension will be available in the `build/` directory
+
+### Installing in Firefox
+
+1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
+2. Click **Load Temporary Add-on**
+3. Select the `manifest.json` file from `build/firefox-mv3/`
+4. The extension will now appear in your Firefox toolbar
+
+For persistent installation, submit the extension to [addons.mozilla.org](https://addons.mozilla.org/).
