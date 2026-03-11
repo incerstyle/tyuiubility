@@ -4,6 +4,8 @@
 
 This extension allows you to save your Tyumen Industrial University group's schedule and view it anytime, anywhere, even without an internet connection.
 
+Source code: https://github.com/incerstyle/tyuiubility
+
 ## Permissions
 
 The extension requests the following permissions:
@@ -27,17 +29,22 @@ This extension:
 
 ### Build process for Firefox
 
-1. Install dependencies:
+1. Clone repo:
+    ```bash
+    git clone https://github.com/incerstyle/tyuiubility.git
+    ```
+    
+2. Install dependencies:
     ```bash
     npm install
     ```
 
-2. Build the extension:
+3. Build the extension:
     ```bash
     npm run build -- --target=firefox
     ```
 
-3. The compiled extension will be available in the `build/` directory
+4. The compiled extension will be available in the `build/` directory
 
 ### Installing in Firefox
 
