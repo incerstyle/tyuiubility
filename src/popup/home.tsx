@@ -1,6 +1,6 @@
 import React from "react"
-import scheduleIcon from "~assets/schedule-icon.png"
-import settingsIcon from "~assets/settings-icon.png"
+import scheduleIcon from "url:~assets/schedule-icon.png"
+import settingsIcon from "url:~assets/settings-icon.png"
 
 type Screen = "home" | "schedule" | "settings"
 
@@ -30,7 +30,6 @@ export default function HomeScreen({
   )
 }
 
-// Плитка
 function Tile({
   title,
   icon,

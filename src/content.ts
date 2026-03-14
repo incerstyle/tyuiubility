@@ -1,7 +1,6 @@
 import browser from "webextension-polyfill"
-import saveScheduleImg from "~assets/save-schedule-button.png"
+import saveScheduleImg from "url:~assets/save-schedule-button.png"
 
-// Типы данных
 type Lesson = {
   time: string
   subject: string
@@ -27,7 +26,6 @@ type SchedulesPayload = {
   even: WeekSchedule
 }
 
-// Парсинг таблицы по дням
 function parseTableByDay(table: HTMLElement): WeekSchedule {
   const days = [
     "monday",
@@ -109,7 +107,6 @@ function parseTableByDay(table: HTMLElement): WeekSchedule {
   return result
 }
 
-// Получение обеих недель
 function getSchedulesByDay(): SchedulesPayload {
   const headers = document.querySelectorAll(
     ".my-typography.h3.justify-center"
@@ -150,7 +147,6 @@ function emptyWeek(): WeekSchedule {
   }
 }
 
-// Вставка кнопки
 function insertScheduleButton() {
   if (document.getElementById("save-schedule-btn")) return;
 
@@ -169,7 +165,7 @@ function insertScheduleButton() {
 
   const button = document.createElement("img");
   button.id = "save-schedule-btn";
-  button.src = browser.runtime.getURL(saveScheduleImg);
+  button.src = saveScheduleImg;
   button.alt = "Сохранить расписание";
   button.style.cursor = "pointer";
   button.style.width = "24px";

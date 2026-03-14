@@ -1,7 +1,7 @@
 {
   "name": "tyuiubility",
   "displayName": "Tyuiubility",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Расширение для удобства пользования сервисами ТИУ.",
   "author": "incerstyle",
   "scripts": {
@@ -25,6 +25,12 @@
     "typescript": "5.9.3"
   },
   "manifest": {
+    "web_accessible_resources": [
+      {
+        "resources": [ "*.png", "*.jpg", "*.svg" ], 
+        "matches": [ "https://my.tyuiu.ru/*" ]
+      }
+    ],
     "permissions": [
       "storage"
     ],

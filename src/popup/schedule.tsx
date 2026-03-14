@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import browser from "webextension-polyfill"
-import backButtonImg from "~assets/back-button.png"
-import leftButtonImg from "~assets/left-button.png"
-import rightButtonImg from "~assets/right-button.png"
-import saveScheduleImg from "~assets/save-schedule-button.png"
+import backButtonImg from "url:~assets/back-button.png"
+import leftButtonImg from "url:~assets/left-button.png"
+import rightButtonImg from "url:~assets/right-button.png"
+import saveScheduleImg from "url:~assets/save-schedule-button.png"
 
 type Lesson = {
   time: string
@@ -17,13 +17,13 @@ type Lesson = {
 type DaySchedule = Lesson[]
 
 type WeekSchedule = {
-  sunday: DaySchedule
   monday: DaySchedule
   tuesday: DaySchedule
   wednesday: DaySchedule
   thursday: DaySchedule
   friday: DaySchedule
   saturday: DaySchedule
+  sunday: DaySchedule
 }
 
 type StoredData = {
@@ -32,47 +32,53 @@ type StoredData = {
   savedAt?: number
 }
 
-type ShortDate = {
-  day: string
-  month: string
-}
-
 const DAYS: (keyof WeekSchedule)[] = [
-  "sunday",
   "monday",
   "tuesday",
   "wednesday",
   "thursday",
   "friday",
-  "saturday"
+  "saturday",
+  "sunday"
 ]
 
 const DAY_LABELS: Record<keyof WeekSchedule, string> = {
-  sunday: "Вс.",
   monday: "Пн.",
   tuesday: "Вт.",
   wednesday: "Ср.",
   thursday: "Чт.",
   friday: "Пт.",
-  saturday: "Сб."
+  saturday: "Сб.",
+  sunday: "Вс."
 }
 
 interface ScheduleScreenProps {
   onBack: () => void
 }
 
-function getTodayKey(): keyof WeekSchedule {
-  const jsDay = new Date().getDay()
-  return DAYS[jsDay]
+function isEvenWeek(targetDate: Date): boolean {
+  const target = new Date(targetDate);
+  target.setHours(0, 0, 0, 0);
+
+  const year = target.getMonth() < 8 ? target.getFullYear() - 1 : target.getFullYear();
+  const sept1 = new Date(year, 8, 1);
+  sept1.setHours(0, 0, 0, 0);
+
+  const dayOfWeek = sept1.getDay(); 
+  const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  
+  const mondayOfFirstWeek = new Date(sept1);
+  mondayOfFirstWeek.setDate(sept1.getDate() - diffToMonday);
+  mondayOfFirstWeek.setHours(0, 0, 0, 0);
+
+  const diffInMs = target.getTime() - mondayOfFirstWeek.getTime();
+  const diffInDays = Math.round(diffInMs / 86400000);
+
+  const weekNumber = Math.floor(diffInDays / 7) + 1;
+
+  return weekNumber % 2 === 0;
 }
 
-function isEvenWeek(): boolean {
-  const date = new Date()
-  const start = new Date(date.getMonth() < 9 ? date.getFullYear() - 1 : date.getFullYear(), 9, 1)
-  const diff = +date - +start
-  const week = Math.ceil((diff / 86400000 + start.getDay() + 1) / 7)
-  return week % 2 === 0
-}
 
 function getLessonTypeId(type: string): string {
   const typeMap: Record<string, string> = {
@@ -84,57 +90,39 @@ function getLessonTypeId(type: string): string {
 }
 
 export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>) {
-  const [odd, setOdd] = useState<WeekSchedule | null>(null)
-  const [even, setEven] = useState<WeekSchedule | null>(null)
-  const [daySchedule, setDaySchedule] = useState<keyof WeekSchedule>(getTodayKey())
-  const [week, setWeek] = useState<"even" | "odd">(isEvenWeek() ? "even" : "odd")
-  let lessons = (week === "even" ? even?.[daySchedule] ?? [] : odd?.[daySchedule] ?? []) as Lesson[]
+  const [odd, setOdd] = useState<WeekSchedule | null>(null);
+  const [even, setEven] = useState<WeekSchedule | null>(null);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
-  function getShortDate(date: Date): ShortDate {
-    return {
-      day: String(date.getDate()).padStart(2, "0"),
-      month: String(date.getMonth() + 1).padStart(2, "0")
-    }
-  }
-
-  const shortDate = getShortDate(currentDate);
-
   useEffect(() => {
-    browser.runtime
-      .sendMessage({ type: "GET_SCHEDULE" })
+    browser.runtime.sendMessage({ type: "GET_SCHEDULE" })
       .then((data: StoredData) => {
-        setOdd(data.scheduleOdd ?? null)
-        setEven(data.scheduleEven ?? null)
+        
+        if (data) {
+          setOdd(data.scheduleOdd ?? null);
+          setEven(data.scheduleEven ?? null);
+        }
       })
-  }, [])
+      .catch(err => console.error("Ошибка получения данных:", err));
+  }, []);
 
-  function switchWeek() {
-    setWeek(week === "even" ? "odd" : "even")
-  }
+  const dayIndex = (currentDate.getDay() + 6) % 7; 
+  const daySchedule = DAYS[dayIndex];
+  const isEven = isEvenWeek(currentDate);
+  
+  const lessons = (isEven ? even?.[daySchedule] : odd?.[daySchedule]) ?? [] as Lesson[];
 
-  function prevDay() {
-    const newDate = new Date(currentDate)
-    newDate.setDate(currentDate.getDate() - 1)
-    setCurrentDate(newDate)
+  const shortDate = {
+    day: String(currentDate.getDate()).padStart(2, "0"),
+    month: String(currentDate.getMonth() + 1).padStart(2, "0")
+  };
 
-    const i = DAYS.indexOf(daySchedule)
-    setDaySchedule(DAYS[(i - 1 + DAYS.length) % DAYS.length])
-    if (i == 0) {
-      switchWeek()
-    }
-  }
-
-  function nextDay() {
-    const newDate = new Date(currentDate)
-    newDate.setDate(currentDate.getDate() + 1)
-    setCurrentDate(newDate)
-
-    const i = DAYS.indexOf(daySchedule)
-    setDaySchedule(DAYS[(i + 1) % DAYS.length])
-    if (i == 6) {
-      switchWeek()
-    }
+  function changeDay(offset: number) {
+    setCurrentDate(prev => {
+      const next = new Date(prev);
+      next.setDate(prev.getDate() + offset);
+      return next;
+    });
   }
 
   if (!odd && !even) {
@@ -160,15 +148,15 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
       </header>
 
       <div className="schedule-date">
-        <button onClick={prevDay} className="date-nav-button">
+        <button onClick={() => changeDay(-1)} className="date-nav-button">
           <img src={leftButtonImg} alt="◀"/>
-          </button>
+        </button>
         <h2 className="schedule-date-title">
           {DAY_LABELS[daySchedule]} {shortDate.day}.{shortDate.month}
-          </h2>
-        <button onClick={nextDay} className="date-nav-button">
+        </h2>
+        <button onClick={() => changeDay(1)} className="date-nav-button">
           <img src={rightButtonImg} alt="▶"/>
-          </button>
+        </button>
       </div>
 
       {lessons.length === 0 ? (

@@ -1,6 +1,5 @@
 import browser from "webextension-polyfill";
 
-// Типы сообщений
 type SaveScheduleMessage = {
   type: "SAVE_SCHEDULE"
   payload: {
@@ -15,31 +14,26 @@ type GetScheduleMessage = {
 
 type IncomingMessage = SaveScheduleMessage | GetScheduleMessage
 
-// Background listener
-chrome.runtime.onMessage.addListener(
-  async (message: IncomingMessage) => {
-    // Сохранение расписания
+browser.runtime.onMessage.addListener((message: IncomingMessage) => {
     if (message.type === "SAVE_SCHEDULE") {
-      browser.storage.local.set({
+      return browser.storage.local.set({
         scheduleOdd: message.payload.odd,
         scheduleEven: message.payload.even,
         savedAt: Date.now()
-      })
-
-      return { ok: true }
+      }).then(() => {
+        return { ok: true };
+      });
     }
 
-    // Получение расписания
     if (message.type === "GET_SCHEDULE") {
-      const data = browser.storage.local.get([
+      return browser.storage.local.get([
         "scheduleOdd",
         "scheduleEven",
         "savedAt"
-      ])
-
-      return data
-    }
-
-    return {}
+      ]).then((data) => {
+      return data;
+    });
   }
-);
+
+  return Promise.resolve({});
+});

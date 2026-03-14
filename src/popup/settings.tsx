@@ -1,4 +1,4 @@
-import backButtonImg from "~assets/back-button.png"
+import backButtonImg from "url:~assets/back-button.png"
 
 interface SettingsScreenProps {
   onBack: () => void
@@ -20,7 +20,7 @@ export default function SettingsScreen({ onBack }: Readonly<SettingsScreenProps>
 
         <div className="settings-row">
           <span className="settings-label">Версия приложения</span>
-          <span className="settings-value">1.0.0</span>
+          <span className="settings-value">1.0.2</span>
         </div>
 
       </div>
