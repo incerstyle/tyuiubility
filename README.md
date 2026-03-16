@@ -56,21 +56,21 @@ This extension:
 ### Build process for Chrome
 
 1. Clone repo:
-    ‘‘‘bash
+    ```bash
     git clone https://github.com/incerstyle/tyuiubility.git
-    ’’’
-
+    ```
+    
 2. Install dependencies:
-    ’’’bash
+    ```bash
     npm install
-    ’’’
+    ```
 
 3. Build the extension:
-    ’’’bash
+    ```bash
     npm run build
-    ’’’
+    ```
 
-4. The compiled extension will be available in the build/chrome-mv3/ directory.
+4. The compiled extension will be available in the ’build/chrome-mv3/ directory’.
 
 ### Installing in Chrome
 
