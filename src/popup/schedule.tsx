@@ -86,7 +86,7 @@ function getLessonTypeId(type: string): string {
     "Практика": "practice",
     "Лабораторная": "laboratory"
   }
-  return typeMap[type] ?? "lab"
+  return typeMap[type]
 }
 
 export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>) {
