@@ -70,12 +70,12 @@ This extension:
     npm run build
     ```
 
-4. The compiled extension will be available in the ’build/chrome-mv3/ directory’.
+4. The compiled extension will be available in the `build/chrome-mv3/ directory`.
 
 ### Installing in Chrome
 
-1. Open Chrome and navigate to ’chrome://extensions’.
+1. Open Chrome and navigate to `chrome://extensions`.
 2. Enable **Developer mode** (toggle in the top right corner).
 3. Click **Load unpacked**.
-4. Select the folder ’build/chrome-mv3/’.
+4. Select the folder `build/chrome-mv3/`.
 5. The extension will now appear in your Chrome toolbar.
