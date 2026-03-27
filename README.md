@@ -41,7 +41,7 @@ This extension:
 
 3. Build the extension:
     ```bash
-    npm run build -- --target=firefox
+    npm run build
     ```
 
 4. The compiled extension will be available in the `build/` directory.
