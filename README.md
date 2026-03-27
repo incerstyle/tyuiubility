@@ -27,7 +27,7 @@ This extension:
 - Node.js installed
 - [Plasmo](https://docs.plasmo.com/) framework
 
-### Build process for Firefox
+### Build process
 
 1. Clone repo:
     ```bash
