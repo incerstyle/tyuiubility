@@ -53,25 +53,6 @@ This extension:
 3. Select the `manifest.json` file from `build/firefox-mv3/`.
 4. The extension will now appear in your Firefox toolbar.
 
-### Build process for Chrome
-
-1. Clone repo:
-    ```bash
-    git clone https://github.com/incerstyle/tyuiubility.git
-    ```
-    
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3. Build the extension:
-    ```bash
-    npm run build
-    ```
-
-4. The compiled extension will be available in the `build/chrome-mv3/ directory`.
-
 ### Installing in Chrome
 
 1. Open Chrome and navigate to `chrome://extensions`.
