@@ -20,7 +20,7 @@ export default function SettingsScreen({ onBack }: Readonly<SettingsScreenProps>
 
         <div className="settings-row">
           <span className="settings-label">Версия приложения</span>
-          <span className="settings-value">1.0.4</span>
+          <span className="settings-value">1.0.5</span>
         </div>
 
       </div>
