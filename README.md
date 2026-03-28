@@ -50,7 +50,7 @@ This extension:
 
 1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on**.
-3. Select the `manifest.json` file from `build/firefox-mv3/`.
+3. Select the `manifest.json` file from `build/firefox-prod/`.
 4. The extension will now appear in your Firefox toolbar.
 
 ### Installing in Chrome
@@ -58,5 +58,5 @@ This extension:
 1. Open Chrome and navigate to `chrome://extensions`.
 2. Enable **Developer mode** (toggle in the top right corner).
 3. Click **Load unpacked**.
-4. Select the folder `build/chrome-mv3/`.
+4. Select the folder `build/chrome-mv3-prod/`.
 5. The extension will now appear in your Chrome toolbar.
