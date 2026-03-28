@@ -4,6 +4,7 @@ import backButtonImg from "url:~assets/back-button.png"
 import leftButtonImg from "url:~assets/left-button.png"
 import rightButtonImg from "url:~assets/right-button.png"
 import saveScheduleImg from "url:~assets/save-schedule-button.png"
+import deleteScheduleImg from "url:~assets/trash.png"
 
 type Lesson = {
   time: string
@@ -125,6 +126,15 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
     });
   }
 
+  function deleteSchedule() {
+    browser.runtime.sendMessage({ type: "DELETE_SCHEDULE" })
+      .then(() => {
+        setOdd(null);
+        setEven(null);
+      })
+      .catch(err => console.error("Ошибка удаления данных:", err));
+  }
+
   if (!odd && !even) {
     return (
       <div className="schedule-container">
@@ -145,6 +155,9 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
       <header className="schedule-header">
         <button onClick={onBack} className="nav-button"><img src={backButtonImg} alt="◀ Назад"/></button>
         <h1>Расписание</h1>
+        <button onClick={deleteSchedule} className="delete-schedule-button">
+          <img src={deleteScheduleImg} alt="Удалить расписание"/>
+        </button>
       </header>
 
       <div className="schedule-date">

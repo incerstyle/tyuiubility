@@ -12,7 +12,11 @@ type GetScheduleMessage = {
   type: "GET_SCHEDULE"
 };
 
-type IncomingMessage = SaveScheduleMessage | GetScheduleMessage
+type DeleteScheduleMessage = {
+  type: "DELETE_SCHEDULE"
+};
+
+type IncomingMessage = SaveScheduleMessage | GetScheduleMessage | DeleteScheduleMessage
 
 browser.runtime.onMessage.addListener((message: IncomingMessage) => {
     if (message.type === "SAVE_SCHEDULE") {
@@ -32,6 +36,16 @@ browser.runtime.onMessage.addListener((message: IncomingMessage) => {
         "savedAt"
       ]).then((data) => {
       return data;
+    });
+  }
+
+  if (message.type === "DELETE_SCHEDULE") {
+    return browser.storage.local.remove([
+      "scheduleOdd",
+      "scheduleEven",
+      "savedAt"
+    ]).then(() => {
+      return { ok: true };
     });
   }
 
