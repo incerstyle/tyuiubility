@@ -51,9 +51,20 @@ img {
     padding: 16px;
 }
 
+.home-header {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+    margin-bottom: 26px;
+}
+
 .home-title {
     text-align: center;
-    margin-bottom: 26px;
+    margin-bottom: 0;
 
     font-size: 34px;
     font-weight: 800;
@@ -69,6 +80,47 @@ img {
     color: #2e3845;
 
     position: relative;
+}
+
+.home-github-button,
+.home-telegram-button {
+    position: absolute;
+    top: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 10px;
+
+    background: #eef2ff;
+
+    transform: translateY(-50%);
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.home-github-button {
+    left: 24px;
+}
+
+.home-telegram-button {
+    right: 24px;
+}
+
+.home-github-button:hover,
+.home-telegram-button:hover {
+    background: #e0e7ff;
+    box-shadow: 0 4px 10px rgba(99,102,241,0.16);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.home-github-icon,
+.home-telegram-icon {
+    width: 22px;
+    height: 22px;
 }
 
 .home-title:hover {

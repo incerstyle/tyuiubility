@@ -1,6 +1,8 @@
 import React from "react"
 import scheduleIcon from "url:~assets/schedule-icon.png"
 import settingsIcon from "url:~assets/settings-icon.png"
+import githubIcon from "url:~assets/github-icon.png"
+import telegramIcon from "url:~assets/telegram-icon.png"
 
 type Screen = "home" | "schedule" | "settings"
 
@@ -11,7 +13,19 @@ export default function HomeScreen({
 }>) {
   return (
     <div className="home-container">
-      <h1 className="home-title">Tyuiubility</h1>
+      <div className="home-header">
+        <h1 className="home-title">Tyuiubility</h1>
+        <button className="home-github-button" onClick={() => {
+          window.open("https://github.com/incerstyle/tyuiubility");
+        }}>
+          <img src={githubIcon} alt="GitHub" className="home-github-icon"/>
+        </button>
+        <button className="home-telegram-button" onClick={() => {
+          window.open("https://t.me/incerstyle");
+        }}>
+          <img src={telegramIcon} alt="Telegram" className="home-telegram-icon"/>
+        </button>
+      </div>
 
       <div className="home-grid">
         <Tile
