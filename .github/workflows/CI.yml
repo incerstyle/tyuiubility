@@ -75,7 +75,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Package extension
-        run: pnpm package
+        run: mkdir -p build && pnpm package
 
       - name: Upload packaged zips
         uses: actions/upload-artifact@v4
