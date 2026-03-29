@@ -54,7 +54,7 @@ jobs:
       run: pnpm build
 
     - name: Package the extension
-      run: pnpm package
+      run: mkdir -p build && pnpm package
 
     - name: Verify release tag and publish secrets
       run: |
