@@ -164,7 +164,7 @@ export default function SettingsScreen({
 
         <div className="settings-row">
           <span className="settings-label">Версия приложения</span>
-          <span className="settings-value">1.1.7</span>
+          <span className="settings-value">1.1.8</span>
         </div>
 
       </div>
