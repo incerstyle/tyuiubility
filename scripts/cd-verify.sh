@@ -41,10 +41,15 @@ const browser = process.argv[2]
 const raw = process.argv[3]
 const parsed = JSON.parse(raw)
 
-const config = parsed[browser] ?? parsed
-if (!config || typeof config !== "object") {
+if (!parsed || typeof parsed !== "object") {
   throw new Error("invalid root")
 }
+
+if (!parsed[browser] || typeof parsed[browser] !== "object") {
+  throw new Error(`missing top-level '${browser}' object`)
+}
+
+const config = parsed[browser]
 
 const required = {
   chrome: ["extId", "refreshToken", "clientId", "clientSecret"],
@@ -63,7 +68,7 @@ for (const key of required) {
 NODE
   then
     echo "${name} has invalid BPP structure for '${browser}'."
-    echo "Expected JSON like: {\"${browser}\": {...required fields...}} or direct ${browser} object."
+    echo "Expected JSON like: {\"${browser}\": {...required fields...}}."
     exit 1
   fi
 }
