@@ -17,3 +17,16 @@ if [[ -z "${SUBMIT_KEYS_FIREFOX:-}" ]]; then
   echo "Missing SUBMIT_KEYS_FIREFOX secret"
   exit 1
 fi
+
+validate_json_secret() {
+  local name="$1"
+  local value="$2"
+
+  if ! node -e 'JSON.parse(process.argv[1])' "$value" >/dev/null 2>&1; then
+    echo "${name} must be valid JSON. Check the secret value for truncation or missing brackets/quotes."
+    exit 1
+  fi
+}
+
+validate_json_secret "SUBMIT_KEYS_CHROME" "${SUBMIT_KEYS_CHROME}"
+validate_json_secret "SUBMIT_KEYS_FIREFOX" "${SUBMIT_KEYS_FIREFOX}"
