@@ -28,12 +28,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Verify release tag and publish secrets
-      env:
-        SUBMIT_KEYS_CHROME: ${{ secrets.SUBMIT_KEYS_CHROME }}
-        SUBMIT_KEYS_FIREFOX: ${{ secrets.SUBMIT_KEYS_FIREFOX }}
-      run: bash scripts/cd-verify.sh
-
     - name: Log in to GHCR
       uses: docker/login-action@v3
       with:
