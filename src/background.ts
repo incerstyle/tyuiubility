@@ -1,53 +1,26 @@
-import browser from "webextension-polyfill";
+import browser from "webextension-polyfill"
+import { createScheduleMessageHandler } from "~src/application/schedule/message-handler"
+import { createScheduleUseCases } from "~src/application/schedule/usecases"
+import type { SchedulesPayload } from "~src/domain/schedule/types"
 
-type SaveScheduleMessage = {
-  type: "SAVE_SCHEDULE"
-  payload: {
-    odd: any
-    even: any
+const store = {
+  async save(payload: SchedulesPayload, savedAt: number) {
+    await browser.storage.local.set({
+      scheduleOdd: payload.odd,
+      scheduleEven: payload.even,
+      savedAt
+    })
+  },
+
+  async get() {
+    return browser.storage.local.get(["scheduleOdd", "scheduleEven", "savedAt"])
+  },
+
+  async clear() {
+    await browser.storage.local.remove(["scheduleOdd", "scheduleEven", "savedAt"])
   }
-};
+}
 
-type GetScheduleMessage = {
-  type: "GET_SCHEDULE"
-};
+const handleMessage = createScheduleMessageHandler(createScheduleUseCases(store))
 
-type DeleteScheduleMessage = {
-  type: "DELETE_SCHEDULE"
-};
-
-type IncomingMessage = SaveScheduleMessage | GetScheduleMessage | DeleteScheduleMessage
-
-browser.runtime.onMessage.addListener((message: IncomingMessage) => {
-    if (message.type === "SAVE_SCHEDULE") {
-      return browser.storage.local.set({
-        scheduleOdd: message.payload.odd,
-        scheduleEven: message.payload.even,
-        savedAt: Date.now()
-      }).then(() => {
-        return { ok: true };
-      });
-    }
-
-    if (message.type === "GET_SCHEDULE") {
-      return browser.storage.local.get([
-        "scheduleOdd",
-        "scheduleEven",
-        "savedAt"
-      ]).then((data) => {
-      return data;
-    });
-  }
-
-  if (message.type === "DELETE_SCHEDULE") {
-    return browser.storage.local.remove([
-      "scheduleOdd",
-      "scheduleEven",
-      "savedAt"
-    ]).then(() => {
-      return { ok: true };
-    });
-  }
-
-  return Promise.resolve({});
-});
+browser.runtime.onMessage.addListener(handleMessage)

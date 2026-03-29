@@ -486,20 +486,16 @@ img {
     font-size: 12px;
     font-weight: 700;
 
-    color: #691dee;
-
+    color: #4c1d95;
     letter-spacing: 0.8px;
-
     padding: 2px 6px;
-
-    background: rgba(124,58,237,0.08);
+    background: #ede9fe;
     border-radius: 6px;
-
     transition: background 0.2s ease;
 }
 
 .lesson-card:hover .lesson-subgroup {
-    background: rgba(124,58,237,0.15);
+    background: #ddd6fe;
 }
 
 .schedule-empty {
