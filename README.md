@@ -36,12 +36,12 @@ This extension:
     
 2. Install dependencies:
     ```bash
-    npm install
+    pnpm install
     ```
 
 3. Build the extension:
     ```bash
-    npm run build
+    pnpm build
     ```
 
 4. The compiled extension will be available in the `build/` directory.

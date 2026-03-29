@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import App from "./popup/app"
+import App from "./features/popup/app"
 import "./popup.css"
 
 const el = document.getElementById("root")

@@ -5,79 +5,12 @@ import leftButtonImg from "url:~assets/left-button.png"
 import rightButtonImg from "url:~assets/right-button.png"
 import saveScheduleImg from "url:~assets/save-schedule-button.png"
 import deleteScheduleImg from "url:~assets/trash.png"
-
-type Lesson = {
-  time: string
-  subject: string
-  subGroup: string
-  type: string
-  location: string
-  teacher: string
-}
-
-type DaySchedule = Lesson[]
-
-type WeekSchedule = {
-  monday: DaySchedule
-  tuesday: DaySchedule
-  wednesday: DaySchedule
-  thursday: DaySchedule
-  friday: DaySchedule
-  saturday: DaySchedule
-  sunday: DaySchedule
-}
-
-type StoredData = {
-  scheduleOdd?: WeekSchedule
-  scheduleEven?: WeekSchedule
-  savedAt?: number
-}
-
-const DAYS: (keyof WeekSchedule)[] = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday"
-]
-
-const DAY_LABELS: Record<keyof WeekSchedule, string> = {
-  monday: "Пн.",
-  tuesday: "Вт.",
-  wednesday: "Ср.",
-  thursday: "Чт.",
-  friday: "Пт.",
-  saturday: "Сб.",
-  sunday: "Вс."
-}
+import { MESSAGE_TYPE } from "~src/application/schedule/message-contract"
+import { DAY_LABELS, isEvenWeek, WEEK_DAYS } from "~src/domain/schedule/week"
+import type { Lesson, StoredData, WeekSchedule } from "~src/domain/schedule/types"
 
 interface ScheduleScreenProps {
   onBack: () => void
-}
-
-function isEvenWeek(targetDate: Date): boolean {
-  const target = new Date(targetDate);
-  target.setHours(0, 0, 0, 0);
-
-  const year = target.getMonth() < 8 ? target.getFullYear() - 1 : target.getFullYear();
-  const sept1 = new Date(year, 8, 1);
-  sept1.setHours(0, 0, 0, 0);
-
-  const dayOfWeek = sept1.getDay(); 
-  const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  
-  const mondayOfFirstWeek = new Date(sept1);
-  mondayOfFirstWeek.setDate(sept1.getDate() - diffToMonday);
-  mondayOfFirstWeek.setHours(0, 0, 0, 0);
-
-  const diffInMs = target.getTime() - mondayOfFirstWeek.getTime();
-  const diffInDays = Math.round(diffInMs / 86400000);
-
-  const weekNumber = Math.floor(diffInDays / 7) + 1;
-
-  return weekNumber % 2 === 0;
 }
 
 
@@ -96,7 +29,7 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
   useEffect(() => {
-    browser.runtime.sendMessage({ type: "GET_SCHEDULE" })
+    browser.runtime.sendMessage({ type: MESSAGE_TYPE.getSchedule })
       .then((data: StoredData) => {
         
         if (data) {
@@ -108,7 +41,7 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
   }, []);
 
   const dayIndex = (currentDate.getDay() + 6) % 7; 
-  const daySchedule = DAYS[dayIndex];
+  const daySchedule = WEEK_DAYS[dayIndex];
   const isEven = isEvenWeek(currentDate);
   
   const lessons = (isEven ? even?.[daySchedule] : odd?.[daySchedule]) ?? [] as Lesson[];
@@ -127,7 +60,7 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
   }
 
   function deleteSchedule() {
-    browser.runtime.sendMessage({ type: "DELETE_SCHEDULE" })
+    browser.runtime.sendMessage({ type: MESSAGE_TYPE.deleteSchedule })
       .then(() => {
         setOdd(null);
         setEven(null);
