@@ -30,3 +30,43 @@ validate_json_secret() {
 
 validate_json_secret "SUBMIT_KEYS_CHROME" "${SUBMIT_KEYS_CHROME}"
 validate_json_secret "SUBMIT_KEYS_FIREFOX" "${SUBMIT_KEYS_FIREFOX}"
+
+validate_bpp_fields() {
+  local name="$1"
+  local browser="$2"
+  local value="$3"
+
+  if ! node - "$browser" "$value" <<'NODE' >/dev/null 2>&1
+const browser = process.argv[2]
+const raw = process.argv[3]
+const parsed = JSON.parse(raw)
+
+const config = parsed[browser] ?? parsed
+if (!config || typeof config !== "object") {
+  throw new Error("invalid root")
+}
+
+const required = {
+  chrome: ["extId", "refreshToken", "clientId", "clientSecret"],
+  firefox: ["apiKey", "apiSecret"]
+}[browser]
+
+if (!required) {
+  throw new Error("unknown browser")
+}
+
+for (const key of required) {
+  if (typeof config[key] !== "string" || config[key].trim() === "") {
+    throw new Error(`missing ${key}`)
+  }
+}
+NODE
+  then
+    echo "${name} has invalid BPP structure for '${browser}'."
+    echo "Expected JSON like: {\"${browser}\": {...required fields...}} or direct ${browser} object."
+    exit 1
+  fi
+}
+
+validate_bpp_fields "SUBMIT_KEYS_CHROME" "chrome" "${SUBMIT_KEYS_CHROME}"
+validate_bpp_fields "SUBMIT_KEYS_FIREFOX" "firefox" "${SUBMIT_KEYS_FIREFOX}"
