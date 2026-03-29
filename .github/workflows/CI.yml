@@ -36,17 +36,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run Lint
-        run: pnpm lint
-
-      - name: Run Type Check
-        run: pnpm check-types
-
-      - name: Run Tests With Coverage
-        run: pnpm test:coverage
-
-      - name: Build extension
-        run: pnpm build
+      - name: Run quality pipeline
+        run: bash scripts/ci-quality.sh
 
   package-artifacts:
     name: Package Build Artifacts
@@ -75,7 +66,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Package extension
-        run: mkdir -p build && pnpm package
+        run: bash scripts/ci-package.sh
 
       - name: Upload packaged zips
         uses: actions/upload-artifact@v4
