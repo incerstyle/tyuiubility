@@ -1,22 +1,26 @@
 import browser from "webextension-polyfill"
 import { createScheduleMessageHandler } from "~src/application/schedule/message-handler"
 import { createScheduleUseCases } from "~src/application/schedule/usecases"
-import type { SchedulesPayload } from "~src/domain/schedule/types"
+import type { StoredData } from "~src/domain/schedule/types"
 
 const store = {
-  async save(payload: SchedulesPayload, savedAt: number) {
-    await browser.storage.local.set({
-      scheduleOdd: payload.odd,
-      scheduleEven: payload.even,
-      savedAt
-    })
-  },
-
   async get() {
-    return browser.storage.local.get(["scheduleOdd", "scheduleEven", "savedAt"])
+    return browser.storage.local.get([
+      "schedulesByGroup",
+      "activeGroup",
+      "scheduleOdd",
+      "scheduleEven",
+      "savedAt"
+    ])
   },
 
-  async clear() {
+  async set(data: StoredData) {
+    await browser.storage.local.set({
+      schedulesByGroup: data.schedulesByGroup ?? {},
+      activeGroup: data.activeGroup
+    })
+
+    // Remove legacy keys after writing grouped format.
     await browser.storage.local.remove(["scheduleOdd", "scheduleEven", "savedAt"])
   }
 }

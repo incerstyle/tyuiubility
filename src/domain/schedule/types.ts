@@ -25,7 +25,18 @@ export type SchedulesPayload = {
   even: WeekSchedule
 }
 
+export type GroupSchedule = SchedulesPayload & {
+  savedAt: number
+  isFavorite?: boolean
+}
+
+export type GroupSchedulesMap = Record<string, GroupSchedule>
+
 export type StoredData = {
+  schedulesByGroup?: GroupSchedulesMap
+  activeGroup?: string
+
+  // Legacy single-schedule fields for migration.
   scheduleOdd?: WeekSchedule
   scheduleEven?: WeekSchedule
   savedAt?: number

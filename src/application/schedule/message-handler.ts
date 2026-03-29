@@ -12,7 +12,15 @@ export function createScheduleMessageHandler(useCases: ScheduleUseCases) {
     }
 
     if (message.type === MESSAGE_TYPE.deleteSchedule) {
-      return useCases.deleteSchedule()
+      return useCases.deleteSchedule(message.payload)
+    }
+
+    if (message.type === MESSAGE_TYPE.setActiveGroup) {
+      return useCases.setActiveGroup(message.payload)
+    }
+
+    if (message.type === MESSAGE_TYPE.toggleFavoriteGroup) {
+      return useCases.toggleFavoriteGroup(message.payload)
     }
 
     return {}
