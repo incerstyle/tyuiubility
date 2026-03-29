@@ -92,4 +92,18 @@ describe("createScheduleMessageHandler", () => {
     ).resolves.toEqual({ ok: true })
     expect(useCases.toggleFavoriteGroup).toHaveBeenCalledWith({ groupName: "ПИ-101" })
   })
+
+  it("returns empty object for unknown message type", async () => {
+    const useCases = {
+      saveSchedule: vi.fn(),
+      getSchedule: vi.fn(),
+      deleteSchedule: vi.fn(),
+      setActiveGroup: vi.fn(),
+      toggleFavoriteGroup: vi.fn()
+    }
+
+    const handler = createScheduleMessageHandler(useCases)
+
+    await expect(handler({ type: "UNKNOWN" } as never)).resolves.toEqual({})
+  })
 })
