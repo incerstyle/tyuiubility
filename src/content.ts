@@ -4,6 +4,8 @@ import { MESSAGE_TYPE } from "~src/application/schedule/message-contract"
 import { parseTableByDay } from "~src/domain/schedule/parser"
 import { createEmptyWeek, type SchedulesPayload } from "~src/domain/schedule/types"
 
+const DEFAULT_GROUP_NAME = "Без названия"
+
 function getSchedulesByDay(): SchedulesPayload {
   const headers = document.querySelectorAll(
     ".my-typography.h3.justify-center"
@@ -31,6 +33,14 @@ function getSchedulesByDay(): SchedulesPayload {
     odd: oddTable ? parseTableByDay(oddTable) : createEmptyWeek(),
     even: evenTable ? parseTableByDay(evenTable) : createEmptyWeek()
   }
+}
+
+function getCurrentGroupName(): string {
+  const selectedGroup = document
+    .querySelector(".magic-selected .selected-value span")
+    ?.textContent?.trim()
+
+  return selectedGroup || DEFAULT_GROUP_NAME
 }
 
 function insertScheduleButton() {
@@ -91,7 +101,15 @@ function insertScheduleButton() {
   button.onclick = () => {
     try {
       const schedules = getSchedulesByDay();
-      browser.runtime.sendMessage({ type: MESSAGE_TYPE.saveSchedule, payload: schedules });
+      const groupName = getCurrentGroupName();
+
+      browser.runtime.sendMessage({
+        type: MESSAGE_TYPE.saveSchedule,
+        payload: {
+          groupName,
+          schedules
+        }
+      });
       const rect = button.getBoundingClientRect();
       tooltip.style.top = `${rect.top - 30}px`;
       tooltip.style.left = `${rect.left}px`;

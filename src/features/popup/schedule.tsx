@@ -4,15 +4,40 @@ import backButtonImg from "url:~assets/back-button.png"
 import leftButtonImg from "url:~assets/left-button.png"
 import rightButtonImg from "url:~assets/right-button.png"
 import saveScheduleImg from "url:~assets/save-schedule-button.png"
-import deleteScheduleImg from "url:~assets/trash.png"
+import settingsIcon from "url:~assets/settings-icon.png"
 import { MESSAGE_TYPE } from "~src/application/schedule/message-contract"
 import { DAY_LABELS, isEvenWeek, WEEK_DAYS } from "~src/domain/schedule/week"
-import type { Lesson, StoredData, WeekSchedule } from "~src/domain/schedule/types"
+import type { GroupSchedulesMap, Lesson, StoredData } from "~src/domain/schedule/types"
 
 interface ScheduleScreenProps {
   onBack: () => void
+  onOpenSettings: () => void
+  selectedGroupName: string | null
+  onSelectGroupChange: (groupName: string | null) => void
 }
 
+function getPreferredGroupName(
+  data: StoredData,
+  selectedGroupName: string | null
+): string | null {
+  const groups = data.schedulesByGroup ?? {}
+
+  if (selectedGroupName && groups[selectedGroupName]) {
+    return selectedGroupName
+  }
+
+  const favoriteGroup = Object.entries(groups).find(([, group]) => group.isFavorite)
+  if (favoriteGroup) {
+    return favoriteGroup[0]
+  }
+
+  if (data.activeGroup && groups[data.activeGroup]) {
+    return data.activeGroup
+  }
+
+  const firstGroup = Object.keys(groups)[0]
+  return firstGroup ?? null
+}
 
 function getLessonTypeId(type: string): string {
   const typeMap: Record<string, string> = {
@@ -23,52 +48,52 @@ function getLessonTypeId(type: string): string {
   return typeMap[type]
 }
 
-export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>) {
-  const [odd, setOdd] = useState<WeekSchedule | null>(null);
-  const [even, setEven] = useState<WeekSchedule | null>(null);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+export default function ScheduleScreen({
+  onBack,
+  onOpenSettings,
+  selectedGroupName,
+  onSelectGroupChange
+}: Readonly<ScheduleScreenProps>) {
+  const [groups, setGroups] = useState<GroupSchedulesMap>({})
+  const [activeGroupName, setActiveGroupName] = useState<string | null>(null)
+  const [currentDate, setCurrentDate] = useState<Date>(new Date())
 
   useEffect(() => {
     browser.runtime.sendMessage({ type: MESSAGE_TYPE.getSchedule })
       .then((data: StoredData) => {
-        
-        if (data) {
-          setOdd(data.scheduleOdd ?? null);
-          setEven(data.scheduleEven ?? null);
-        }
-      })
-      .catch(err => console.error("Ошибка получения данных:", err));
-  }, []);
+        if (!data) return
 
-  const dayIndex = (currentDate.getDay() + 6) % 7; 
-  const daySchedule = WEEK_DAYS[dayIndex];
-  const isEven = isEvenWeek(currentDate);
-  
-  const lessons = (isEven ? even?.[daySchedule] : odd?.[daySchedule]) ?? [] as Lesson[];
+        const nextGroups = data.schedulesByGroup ?? {}
+          const nextActiveGroup = getPreferredGroupName(data, selectedGroupName)
+        setGroups(nextGroups)
+          setActiveGroupName(nextActiveGroup)
+          onSelectGroupChange(nextActiveGroup)
+      })
+      .catch((err) => console.error("Ошибка получения данных:", err))
+        }, [onSelectGroupChange, selectedGroupName])
+
+  const activeGroup = activeGroupName ? groups[activeGroupName] : undefined
+
+  const dayIndex = (currentDate.getDay() + 6) % 7
+  const daySchedule = WEEK_DAYS[dayIndex]
+  const isEven = isEvenWeek(currentDate)
+
+  const lessons = ((isEven ? activeGroup?.even?.[daySchedule] : activeGroup?.odd?.[daySchedule]) ?? []) as Lesson[]
 
   const shortDate = {
     day: String(currentDate.getDate()).padStart(2, "0"),
     month: String(currentDate.getMonth() + 1).padStart(2, "0")
-  };
+  }
 
   function changeDay(offset: number) {
-    setCurrentDate(prev => {
-      const next = new Date(prev);
-      next.setDate(prev.getDate() + offset);
-      return next;
-    });
+    setCurrentDate((prev) => {
+      const next = new Date(prev)
+      next.setDate(prev.getDate() + offset)
+      return next
+    })
   }
 
-  function deleteSchedule() {
-    browser.runtime.sendMessage({ type: MESSAGE_TYPE.deleteSchedule })
-      .then(() => {
-        setOdd(null);
-        setEven(null);
-      })
-      .catch(err => console.error("Ошибка удаления данных:", err));
-  }
-
-  if (!odd && !even) {
+  if (!activeGroup) {
     return (
       <div className="schedule-container">
         <header className="schedule-header">
@@ -88,10 +113,14 @@ export default function ScheduleScreen({ onBack }: Readonly<ScheduleScreenProps>
       <header className="schedule-header">
         <button onClick={onBack} className="nav-button"><img src={backButtonImg} alt="◀ Назад"/></button>
         <h1>Расписание</h1>
-        <button onClick={deleteSchedule} className="delete-schedule-button">
-          <img src={deleteScheduleImg} alt="Удалить расписание"/>
+        <button onClick={onOpenSettings} className="schedule-settings-button">
+          <img src={settingsIcon} alt="Настройки расписания"/>
         </button>
       </header>
+
+      {activeGroupName ? (
+        <div className="schedule-group-name">Группа: {activeGroupName}</div>
+      ) : null}
 
       <div className="schedule-date">
         <button onClick={() => changeDay(-1)} className="date-nav-button">

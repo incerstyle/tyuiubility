@@ -74,4 +74,32 @@ describe("parseTableByDay", () => {
     expect(week.tuesday).toHaveLength(0)
     expect(week.sunday).toHaveLength(0)
   })
+
+  it("handles incomplete rows and missing optional fields", () => {
+    document.body.innerHTML = `
+      <div class="my-schedule-table">
+        <div class="table-cell header">time</div>
+        <div class="table-cell">10:00-11:30</div>
+        <div class="table-cell-event">
+          <div class="event-body">
+            <div class="font-bold">История</div>
+            <div class="lesson-type">Лекция</div>
+            <div class="font-medium">Сидоров С.С.</div>
+          </div>
+        </div>
+      </div>
+    `
+
+    const table = document.querySelector<HTMLElement>(".my-schedule-table")
+    const week = parseTableByDay(table)
+
+    expect(week.monday).toHaveLength(1)
+    expect(week.monday[0]).toMatchObject({
+      subject: "История",
+      teacher: "Сидоров С.С.",
+      location: "",
+      subGroup: ""
+    })
+    expect(week.tuesday).toHaveLength(0)
+  })
 })
