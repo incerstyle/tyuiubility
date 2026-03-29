@@ -66,14 +66,14 @@ jobs:
       run: bash scripts/cd-push-release-ghcr.sh
 
     - name: Browser Platform Publish (Chrome)
-      uses: PlasmoHQ/bpp@v4
+      uses: PlasmoHQ/bpp@v3
       with:
         keys: ${{ secrets.SUBMIT_KEYS_CHROME }}
         artifact: build/chrome-mv3-prod.zip
         verbose: true
 
     - name: Browser Platform Publish (Firefox)
-      uses: PlasmoHQ/bpp@v4
+      uses: PlasmoHQ/bpp@v3
       with:
         keys: ${{ secrets.SUBMIT_KEYS_FIREFOX }}
         artifact: build/firefox-prod.zip
