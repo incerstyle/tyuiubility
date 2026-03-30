@@ -408,13 +408,17 @@ img {
     padding: 12px 14px;
 }
 
-.lesson-time {
+.lesson-top {
     font-feature-settings: "tnum";
     font-weight: 600;
     margin-bottom: 6px;
     color: #6b7280;
     font-size: 12px;
     letter-spacing: 0.3px;
+}
+
+.lesson-group {
+    margin-top: 4px;
 }
 
 .lesson-subject {
