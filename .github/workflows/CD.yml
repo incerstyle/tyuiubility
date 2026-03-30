@@ -44,13 +44,20 @@ jobs:
     - name: Package extension
       run: bash scripts/ci-package.sh
 
-    - name: Browser Platform Publish
+    - name: Browser Platform Publish (Chrome)
       uses: PlasmoHQ/bpp@v3
       with:
-        keys: ${{ secrets.SUBMIT_KEYS }}
+        keys: ${{ secrets.SUBMIT_KEYS_CHROME }}
         artifact: build/chrome-mv3-prod.zip
         verbose: true
 
+    - name: Browser Platform Publish (Firefox)
+      uses: PlasmoHQ/bpp@v3
+      with:
+        keys: ${{ secrets.SUBMIT_KEYS_FIREFOX }}
+        artifact: build/firefox-prod.zip
+        verbose: true
+    
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
