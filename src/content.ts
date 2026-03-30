@@ -39,7 +39,7 @@ function getCurrentGroupName(): string {
   const selections = document.querySelectorAll(".my-select-magic");
   
   for (const item of selections) {
-    let selectorLabel = item.querySelector("label")?.textContent?.trim();
+    const selectorLabel = item.querySelector("label")?.textContent?.trim();
     
     if (selectorLabel === "Группа" || selectorLabel === "Преподаватель") {
       const selectedGroup = item
