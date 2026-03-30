@@ -41,6 +41,23 @@ jobs:
     - name: Pull packaged artifacts from GHCR (sha)
       run: bash scripts/cd-pull-ghcr-artifacts.sh
 
+    - name: Push release artifacts to GHCR
+      run: bash scripts/cd-push-release-ghcr.sh
+
+    - name: Browser Platform Publish (Chrome)
+      uses: PlasmoHQ/bpp@v3
+      with:
+        keys: ${{ secrets.SUBMIT_KEYS }}
+        artifact: build/chrome-mv3-prod.zip
+        verbose: true
+
+    - name: Browser Platform Publish (Firefox)
+      uses: PlasmoHQ/bpp@v3
+      with:
+        keys: ${{ secrets.SUBMIT_KEYS }}
+        artifact: build/firefox-prod.zip
+        verbose: true
+    
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -55,20 +72,3 @@ jobs:
           build/firefox-prod.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Push release artifacts to GHCR
-      run: bash scripts/cd-push-release-ghcr.sh
-
-    - name: Browser Platform Publish (Chrome)
-      uses: PlasmoHQ/bpp@v3
-      with:
-        keys: ${{ secrets.SUBMIT_KEYS_CHROME }}
-        artifact: build/chrome-mv3-prod.zip
-        verbose: true
-
-    - name: Browser Platform Publish (Firefox)
-      uses: PlasmoHQ/bpp@v3
-      with:
-        keys: ${{ secrets.SUBMIT_KEYS_FIREFOX }}
-        artifact: build/firefox-prod.zip
-        verbose: true
