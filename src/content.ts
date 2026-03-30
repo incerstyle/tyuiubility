@@ -36,12 +36,25 @@ function getSchedulesByDay(): SchedulesPayload {
 }
 
 function getCurrentGroupName(): string {
-  const selectedGroup = document
-    .querySelector(".magic-selected .selected-value span")
-    ?.textContent?.trim()
+  const selections = document.querySelectorAll(".my-select-magic");
+  
+  for (const item of selections) {
+    const selectorLabel = item.querySelector("label")?.textContent?.trim();
+    
+    if (selectorLabel === "Группа" || selectorLabel === "Преподаватель") {
+      const selectedGroup = item
+        .querySelector(".magic-wrapper .magic-selected .selected-value span")
+        ?.textContent?.trim();
 
-  return selectedGroup || DEFAULT_GROUP_NAME
+      if (selectedGroup) {
+        return selectedGroup;
+      }
+    }
+  }
+
+  return DEFAULT_GROUP_NAME;
 }
+
 
 function insertScheduleButton() {
   if (document.getElementById("save-schedule-btn")) return;

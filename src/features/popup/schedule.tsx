@@ -119,7 +119,7 @@ export default function ScheduleScreen({
       </header>
 
       {activeGroupName ? (
-        <div className="schedule-group-name">Группа: {activeGroupName}</div>
+        <div className="schedule-group-name">{activeGroupName}</div>
       ) : null}
 
       <div className="schedule-date">
@@ -140,7 +140,12 @@ export default function ScheduleScreen({
         lessons.map((l, idx) => (
           <div key={`${l.time}-${l.subject}-${l.subGroup || "all"}-${idx}`} className="lesson-card">
             <div className="left-column">
-              <div className="lesson-time">{l.time}</div>
+              <div className="lesson-top">
+                <div className="lesson-time">{l.time}</div>
+                {l.group === "" ? null :
+                  <div className="lesson-group">{l.group}</div>
+                }
+              </div>
               <div className="lesson-subject">{l.subject}</div>
               <div className="lesson-meta">
                 <div className={`lesson-type ${getLessonTypeId(l.type)}`}>

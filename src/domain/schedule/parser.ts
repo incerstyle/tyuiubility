@@ -43,10 +43,18 @@ export function parseTableByDay(table: HTMLElement): WeekSchedule {
           lessonCell.querySelector(".font-medium")?.textContent?.trim() ??
           ""
 
-        const subgroup =
+        const subGroup =
           lessonCell.querySelector(".title-subgroup")?.textContent?.trim() ??
           lessonCell.querySelector(".font-medium.mb-1")?.textContent?.trim() ??
           ""
+
+        const groupElement = Array.from(lessonCell.querySelectorAll("div")).find(div => {
+          if (div.children.length > 0) return false;
+          const text = div.textContent?.trim() || "";
+
+          return /^[А-Яа-яA-Za-z]+-\d+-\d+$/.test(text);
+        });
+        const group = groupElement?.textContent?.trim() || "";
 
         const locationBlock = lessonCell.querySelector(".flex-vc")
         let location = ""
@@ -64,8 +72,9 @@ export function parseTableByDay(table: HTMLElement): WeekSchedule {
 
         result[day].push({
           time,
+          group,
           subject,
-          subGroup: subgroup,
+          subGroup,
           type,
           location,
           teacher

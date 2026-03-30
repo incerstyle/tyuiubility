@@ -1,5 +1,6 @@
 export type Lesson = {
   time: string
+  group: string
   subject: string
   subGroup: string
   type: string
