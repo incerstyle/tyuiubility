@@ -16,7 +16,6 @@ concurrency:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   release:
@@ -28,36 +27,30 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Log in to GHCR
-      uses: docker/login-action@v3
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
       with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        version: latest
 
-    - name: Install ORAS
-      uses: oras-project/setup-oras@v1
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: pnpm
 
-    - name: Pull packaged artifacts from GHCR (sha)
-      run: bash scripts/cd-pull-ghcr-artifacts.sh
+    - name: Install dependencies
+      run: bash scripts/ci-install-deps.sh
 
-    - name: Push release artifacts to GHCR
-      run: bash scripts/cd-push-release-ghcr.sh
+    - name: Package extension
+      run: bash scripts/ci-package.sh
 
-    - name: Browser Platform Publish (Chrome)
+    - name: Browser Platform Publish
       uses: PlasmoHQ/bpp@v3
       with:
         keys: ${{ secrets.SUBMIT_KEYS }}
         artifact: build/chrome-mv3-prod.zip
         verbose: true
 
-    - name: Browser Platform Publish (Firefox)
-      uses: PlasmoHQ/bpp@v3
-      with:
-        keys: ${{ secrets.SUBMIT_KEYS }}
-        artifact: build/firefox-prod.zip
-        verbose: true
-    
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
